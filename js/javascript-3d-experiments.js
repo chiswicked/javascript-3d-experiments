@@ -6,6 +6,7 @@
 
 var canvasWidth = 640;
 var canvasHeight = 480;
+var canvasContainer = document.getElementById('canvas');
 
 var scene = new THREE.Scene();
 var camera = new THREE.PerspectiveCamera(75, canvasWidth / canvasHeight, 0.1, 1000);
@@ -65,7 +66,7 @@ sphere(sphereRadius, spherePrecision).forEach((col) => {
 
 var renderer = new THREE.WebGLRenderer();
 renderer.setSize(canvasWidth, canvasHeight);
-document.body.appendChild(renderer.domElement);
+canvasContainer.appendChild(renderer.domElement);
 
 var controls = new THREE.OrbitControls(camera, renderer.domElement);
 controls.addEventListener('change', function () {
