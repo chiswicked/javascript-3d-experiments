@@ -8,18 +8,35 @@ var canvasWidth = 640;
 var canvasHeight = 480;
 var canvasContainer = document.getElementById('canvas');
 
+var clock = new THREE.Clock();
+
+// RENDERER
+var renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer.setClearColor(0x000000);
+renderer.setPixelRatio(window.devicePixelRatio);
+renderer.setSize(canvasWidth, canvasHeight);
+canvasContainer.appendChild(renderer.domElement);
+
+// SCENE
 var scene = new THREE.Scene();
+
+// CAMERA
 var camera = new THREE.PerspectiveCamera(75, canvasWidth / canvasHeight, 0.1, 1000);
+camera.position.z = 50;
 
-camera.position.x = 5;
-camera.position.y = -10;
-camera.position.z = 25;
+var sphereRadius = 25;
+var spherePrecision = 200;
 
-var sphereRadius = 10;
-var spherePrecision = 50;
+// LIGHTS
+var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
+scene.add(ambientLight);
+
+var directionalLight = new THREE.DirectionalLight(0x0066ff);
+directionalLight.position.set(30, 30, 30);
+scene.add(directionalLight);
 
 /**
- * Returns array populated with sphere vertices
+ * Returns array populated with sphere [x, y, z] coordinates
  * 
  * @param {*} radius 
  * @param {*} pecision 
@@ -35,7 +52,7 @@ function sphere(radius, pecision) {
       var x3d = radius * Math.sin(lat) * Math.cos(lon);
       var y3d = radius * Math.sin(lat) * Math.sin(lon);
       var z3d = radius * Math.cos(lat);
-      globe[x].push(new THREE.Vector3(x3d, y3d, z3d));
+      globe[x].push([x3d, y3d, z3d]);
     }
   }
   return globe;
@@ -54,37 +71,55 @@ function scale(v, min1, max1, min2, max2) {
   return ((v - min1) / (max1 - min1)) * (max2 - min2) + min2;
 }
 
-sphere(sphereRadius, spherePrecision).forEach((col) => {
+// CREATE SPHERE
+var geometry = new THREE.Geometry();
+var sphereData = sphere(sphereRadius, spherePrecision);
+
+sphereData.forEach((col) => {
   col.forEach((v3) => {
-    var dotGeometry = new THREE.Geometry();
-    dotGeometry.vertices.push(v3);
-    var dotMaterial = new THREE.PointsMaterial({ size: 1, sizeAttenuation: false });
-    var dot = new THREE.Points(dotGeometry, dotMaterial);
-    scene.add(dot);
+    geometry.vertices.push(new THREE.Vector3(v3[0], v3[1], v3[2]));
   });
 });
 
-var renderer = new THREE.WebGLRenderer();
-renderer.setSize(canvasWidth, canvasHeight);
-canvasContainer.appendChild(renderer.domElement);
 
-var controls = new THREE.OrbitControls(camera, renderer.domElement);
-controls.addEventListener('change', function () {
-  renderer.render(scene, camera);
-});
+for (var y = 0; y < spherePrecision - 1; y++) {
+  for (var x = 0; x < spherePrecision - 1; x++) {
+    var pos = x + y * spherePrecision;
+    geometry.faces.push(new THREE.Face3(pos, pos + spherePrecision, pos + 1));
+    geometry.faces.push(new THREE.Face3(pos + 1, pos + spherePrecision, pos + spherePrecision + 1));
+  }
+  geometry.faces.push(new THREE.Face3((y + 1) * spherePrecision - 1, (y + 2) * spherePrecision - 1, y * spherePrecision));
+  geometry.faces.push(new THREE.Face3(y * spherePrecision, (y + 2) * spherePrecision - 1, (y + 1) * spherePrecision));
+}
+geometry.computeFaceNormals();
+geometry.computeVertexNormals();
+var material = new THREE.MeshPhongMaterial({ color: 0x006D6F, specular: 0x221100, shininess: 50 });
+var mesh = new THREE.Mesh(geometry, material);
+mesh.position.z = -25;
 
-controls.enableZoom = false;
-renderer.render(scene, camera);
+scene.add(mesh);
 
+// STATS PANEL
 var stats = new Stats();
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
 
-function animate() {
-  stats.begin();
-  // monitored code goes here
-  stats.end();
-  requestAnimationFrame(animate);
-}
+// RENDERING & ANIMATION
+render();
 
-requestAnimationFrame(animate);
+function render() {
+  stats.begin();
+
+  var time = Date.now() * 0.0005;
+  var delta = clock.getDelta();
+
+  mesh.rotation.x += 0.5 * delta;
+  mesh.rotation.y += 0.5 * delta;
+  mesh.position.x = Math.sin(time * 0.5) * 5;
+  mesh.position.y = Math.cos(time * 0.5) * 5;
+  mesh.position.z = Math.cos(time * 0.5) * 5 - 25;
+
+  stats.end();
+  renderer.render(scene, camera);
+  requestAnimationFrame(render);
+}
