@@ -146,7 +146,7 @@ scene.add(mesh);
 var stats = new Stats();
 stats.domElement.style.position = 'absolute';
 stats.domElement.style.left = 8;
-stats.domElement.style.top = 48;
+stats.domElement.style.top = 56;
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
 
@@ -217,4 +217,12 @@ function onWindowResize(){
   camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
   camera.updateProjectionMatrix();
   renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
+}
+
+function onStatsToggle(event) {
+  if (event.target.checked) {
+    document.body.appendChild(stats.dom);
+  } else {
+    document.body.removeChild(stats.dom);
+  };
 }

@@ -9,7 +9,15 @@
 <body>
   <header>JavaScript 3D Experiments</header>
   <div id="main">
-    <div id="controls"></div>
+    <div id="controls">
+      <fieldset>
+        <legend>Stats</legend>
+        <div>
+          <input type="checkbox" onchange="onStatsToggle(event);" checked>
+          <label for="coding">Display</label>
+        </div>
+      </fieldset>
+    </div>
     <div id="canvas"></div>
   </div>
   <footer>JavaScript 3D Experiments Copyright (c) 2017 Norbert Metz</footer>​
