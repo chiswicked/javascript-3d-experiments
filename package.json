@@ -1,0 +1,27 @@
+{
+  "name": "javascript-3d-experiments",
+  "version": "1.0.0",
+  "description": "JavaScript 3D Experiments",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/chiswicked/javascript-3d-experiments.git"
+  },
+  "keywords": [
+    "three.js",
+    "javascript",
+    "node.js"
+  ],
+  "author": "Norbert Metz <mr.norbert.metz@googlemail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/chiswicked/javascript-3d-experiments/issues"
+  },
+  "homepage": "https://github.com/chiswicked/javascript-3d-experiments#readme",
+  "dependencies": {
+    "express": "^4.15.3"
+  }
+}
