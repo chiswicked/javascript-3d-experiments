@@ -4,15 +4,15 @@
  * ISC Licensed
  */
 
-var canvasWidth = 1024;
-var canvasHeight = 768;
 var canvasContainer = document.getElementById('canvas');
+var canvasWidth = canvasContainer.clientWidth;
+var canvasHeight = canvasContainer.clientHeight;
 
 var clock = new THREE.Clock();
 
 // RENDERER
 var renderer = new THREE.WebGLRenderer({ antialias: true });
-renderer.setClearColor(0x000000);
+renderer.setClearColor(0x020304);
 renderer.setPixelRatio(window.devicePixelRatio);
 renderer.setSize(canvasWidth, canvasHeight);
 canvasContainer.appendChild(renderer.domElement);
@@ -144,6 +144,9 @@ scene.add(mesh);
 
 // STATS PANEL
 var stats = new Stats();
+stats.domElement.style.position = 'absolute';
+stats.domElement.style.left = 8;
+stats.domElement.style.top = 48;
 stats.showPanel(0); // 0: fps, 1: ms, 2: mb, 3+: custom
 document.body.appendChild(stats.dom);
 
@@ -206,4 +209,12 @@ function update() {
 
 function render() {
   renderer.render(scene, camera);
+}
+
+window.addEventListener( 'resize', onWindowResize, false );
+
+function onWindowResize(){
+  camera.aspect = canvasContainer.clientWidth / canvasContainer.clientHeight;
+  camera.updateProjectionMatrix();
+  renderer.setSize(canvasContainer.clientWidth, canvasContainer.clientHeight);
 }

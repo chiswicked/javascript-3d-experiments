@@ -1,0 +1,53 @@
+* {
+  margin: 0;
+  padding: 0;
+  color: #CCEEFF;
+  background-color: #020304;
+}
+
+body {
+  position: absolute;
+  font-family: 'Exo';
+  width: 100%;
+  height: 100%;
+}
+
+header {
+  position: absolute;
+  font-size: 32px;
+  /*padding: 8px;*/
+  text-indent: 8px;
+  width: 100%;
+  height: 48px;
+  overflow: hidden;
+}
+
+#main {
+  position: absolute;
+  top: 48px;
+  bottom: 24px;
+  width: 100%;
+}
+
+#controls {
+  position: absolute;
+  width: 240px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+#canvas {
+  margin-left: 240px;
+  height: 100%;
+  overflow-y: auto;
+}
+
+footer {
+  position: absolute;
+  bottom: 0;
+  font-size: 12px;
+  text-indent: 8px;
+  width: 100%;
+  height: 24px;
+  overflow: hidden;
+}
