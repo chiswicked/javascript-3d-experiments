@@ -32,9 +32,25 @@ var roundingPrecision = 5;
 var ambientLight = new THREE.AmbientLight(0xffffff, 0.5);
 scene.add(ambientLight);
 
-var pointlLight = new THREE.PointLight(0xccccff, 0.5);
-scene.add(pointlLight);
+var pointLight1 = new THREE.PointLight(0xffcc55, 0.5);
+pointLight1.position.x = 8;
+pointLight1.position.y = 8;
+pointLight1.position.z = -40;
+scene.add(pointLight1);
 
+var pointLight1Helper = new THREE.PointLightHelper(pointLight1, 0.5)
+scene.add(pointLight1Helper);
+
+var pointLight2 = new THREE.PointLight(0x55ccff, 0.5);
+pointLight2.position.x = -6;
+pointLight2.position.y = -2;
+pointLight2.position.z = -20;
+scene.add(pointLight2);
+
+var pointLight2Helper = new THREE.PointLightHelper(pointLight2, 0.5)
+scene.add(pointLight2Helper);
+
+// MATERIALS
 var material = new THREE.MeshStandardMaterial({
   color: 0xffffff,
   emissiveIntensity: 0.2,
@@ -224,5 +240,29 @@ function onStatsToggle(event) {
     document.body.appendChild(stats.dom);
   } else {
     document.body.removeChild(stats.dom);
+  };
+}
+
+function onLightToggle(event) {
+  if (event.target.checked) {
+    scene.add(pointLight1);
+    document.getElementById(event.target.name + 'HelperCheckBox').disabled = false;
+    toggleLightHelper(document.getElementById(event.target.name + 'HelperCheckBox').checked)
+  } else {
+    scene.remove(pointLight1);
+    document.getElementById(event.target.name + 'HelperCheckBox').disabled = true;
+    toggleLightHelper(false);
+  };
+}
+
+function onLightHelperToggle(event) {
+  toggleLightHelper(event.target.checked);
+}
+
+function toggleLightHelper(visible) {
+  if (visible) {
+    scene.add(pointLight1Helper);
+  } else {
+    scene.remove(pointLight1Helper);
   };
 }

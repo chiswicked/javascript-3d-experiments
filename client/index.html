@@ -13,8 +13,19 @@
       <fieldset>
         <legend>Stats</legend>
         <div>
-          <input type="checkbox" onchange="onStatsToggle(event);" checked>
-          <label for="coding">Display</label>
+          <input type="checkbox" id="statsCheckBox" onchange="onStatsToggle(event);" checked>
+          <label for="statsCheckBox">Display</label>
+        </div>
+      </fieldset>
+      <fieldset>
+        <legend>Lights</legend>
+        <div>
+          <input type="checkbox" id="light1CheckBox" name="light1" onchange="onLightToggle(event);" checked>
+          <label for="light1CheckBox">Yellow Light</label>
+        </div>
+        <div>
+          <input type="checkbox" id="light1HelperCheckBox" onchange="onLightHelperToggle(event);" checked>
+          <label for="light1HelperCheckBox">Yellow Light Helper</label>
         </div>
       </fieldset>
     </div>
