@@ -22,9 +22,12 @@ var scene = new THREE.Scene();
 
 // CAMERA
 var camera = new THREE.PerspectiveCamera(35, canvasWidth / canvasHeight, 0.1, 10000);
+camera.position.y = 50;
+camera.position.z = -5;
+camera.rotation.x = -Math.PI / 4;
 
-var sphereRadius = 2;
-var spherePrecision = 50;
+var sphereRadius = 4;
+var spherePrecision = 60;
 
 var roundingPrecision = 5;
 
@@ -50,6 +53,15 @@ scene.add(pointLight2);
 var pointLight2Helper = new THREE.PointLightHelper(pointLight2, 0.5)
 scene.add(pointLight2Helper);
 
+var pointLight3 = new THREE.PointLight(0xff6600, 0.03);
+pointLight3.position.x = -6;
+pointLight3.position.y = 25;
+pointLight3.position.z = -150;
+scene.add(pointLight3);
+
+var pointLight3Helper = new THREE.PointLightHelper(pointLight3, 0.5)
+scene.add(pointLight3Helper);
+
 // MATERIALS
 var material = new THREE.MeshStandardMaterial({
   color: 0xffffff,
@@ -58,6 +70,12 @@ var material = new THREE.MeshStandardMaterial({
   metalness: 0.9,
   side: THREE.DoubleSide,
   // wireframe: true,
+});
+
+// MATERIALS
+var terrainMaterial = new THREE.MeshBasicMaterial({
+  color: 0x21252A,
+  wireframe: true,
 });
 
 // SUPER
@@ -131,6 +149,33 @@ function scale(v, min1, max1, min2, max2) {
   return ((v - min1) / (max1 - min1)) * (max2 - min2) + min2;
 }
 
+// CREATE LANDSCAPE
+
+var terrainDetailX = 80;
+var terrainDetailY = 40;
+var terrainElevation = 5;
+
+var terrainGeometry = new THREE.PlaneGeometry(200, 100, terrainDetailX, terrainDetailY);
+var terrainMesh = new THREE.Mesh(terrainGeometry, terrainMaterial);
+terrainMesh.position.y = -10;
+terrainMesh.position.z = -80;
+terrainMesh.rotation.x = Math.PI / 2;
+
+noise.seed(Math.random());
+
+terrainMesh.geometry.dynamic = true;
+
+for (var w = 0; w < terrainDetailX; w++) {
+  for (var h = 0; h < terrainDetailY; h++) {
+    var value = noise.perlin3(w / 5, h / 5, 0);
+    terrainMesh.geometry.vertices[w + h * terrainDetailX].z = value * terrainElevation;
+  }
+}
+  terrainMesh.geometry.computeFaceNormals();
+  terrainMesh.geometry.computeVertexNormals();
+  terrainMesh.geometry.verticesNeedUpdate = true;
+scene.add(terrainMesh);
+
 // CREATE SPHERE
 var geometry = new THREE.Geometry();
 var sphereData = sphere(sphereRadius, spherePrecision);
@@ -190,8 +235,8 @@ function update() {
   mesh.rotation.y += 0.3 * delta;
   mesh.rotation.z += 0.5 * delta;
   mesh.position.x = Math.sin(time * 0.5) * 2;
-  mesh.position.y = Math.cos(time * 0.5) * 4;
-  mesh.position.z = Math.cos(time * 0.5) - 35;
+  mesh.position.y = Math.cos(time * 0.5) * 4 + 5;
+  mesh.position.z = Math.cos(time * 0.5) - 55;
 
   var data = superShape(sphereRadius, spherePrecision,
     {
@@ -207,6 +252,7 @@ function update() {
     });
 
   oscill += 0.005;
+  oscilla += 0.01;
 
   for (var y = 0; y < spherePrecision; y++) {
     for (var x = 0; x < spherePrecision; x++) {
@@ -219,6 +265,17 @@ function update() {
   mesh.geometry.computeFaceNormals();
   mesh.geometry.computeVertexNormals();
   mesh.geometry.verticesNeedUpdate = true;
+
+
+for (var w = 0; w < terrainDetailX; w++) {
+  for (var h = 0; h < terrainDetailY; h++) {
+    var value = noise.perlin3(w / 5, h / 5, oscilla);
+    terrainMesh.geometry.vertices[w + h * terrainDetailX].z = value * terrainElevation;
+  }
+}
+  terrainMesh.geometry.computeFaceNormals();
+  terrainMesh.geometry.computeVertexNormals();
+  terrainMesh.geometry.verticesNeedUpdate = true;
 
   stats.update();
 }
@@ -265,4 +322,8 @@ function toggleLightHelper(visible) {
   } else {
     scene.remove(pointLight1Helper);
   };
+}
+
+function randomInt(min, max) {
+  return Math.floor(Math.random() * (max - min + 1)) + min;
 }
